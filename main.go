@@ -7,7 +7,6 @@ import (
 )
 
 func main() {
-	fmt.Println("vim-go")
 	resp, err := soup.Get("https://xkcd.com")
 	if err != nil {
 		os.Exit(1)

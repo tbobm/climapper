@@ -2,6 +2,13 @@
 
 Simple tool that for the Citymapper API made by a lazy person
 
+## Todos
+
+- [ ] Collect destination and current location (ENV variables ?)
+- [ ] Make a call to the API
+- [ ] Parse the results
+- [ ] Display them gracefully
+
 
 ### Resources
 
