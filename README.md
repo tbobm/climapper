@@ -7,12 +7,15 @@ Simple tool that for the Citymapper API made by a lazy person
 In order to get climapper to work efficiently, you have to set a `home` variable, based on the LAT and LONG of your destination.
 
 > Example:
+
+
 ```bash
 # In your bash_profile (or bashrc)
 
 export work="48.813896,2.392448"
 export home="48.928378,2.162200"
 ```
+
 
 ## Usage
 
