@@ -1,13 +1,6 @@
 hash: 3894ff4cd8dd63d4e2b9a90c0e69ae613bad2c82c5a0fabd68443ad2729e2a21
-updated: 2017-02-27T11:09:54.494259681+01:00
+updated: 2017-02-28T18:43:21.813729384+01:00
 imports:
 - name: github.com/anaskhan96/soup
-  version: bb1de59d4e120cb82011cd42de769d346f316e84
-  subpackages:
-  - fetch
-- name: golang.org/x/net
-  version: 10c134ea0df15f7e34d789338c7a2d76cc7a3ab9
-  subpackages:
-  - html
-  - html/atom
+  version: 8d078331e4a1036e75c228c43036e9bdae0d5157
 testImports: []
