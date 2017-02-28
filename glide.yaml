@@ -1,3 +1,2 @@
 package: github.com/massard-t/climapper
 import:
-- package: github.com/anaskhan96/soup
