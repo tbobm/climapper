@@ -1,7 +1,7 @@
 package main
 
 import (
-	"encoding/json"
+	//	"encoding/json"
 	"fmt"
 	"github.com/tidwall/gjson"
 	"io/ioutil"
@@ -47,7 +47,7 @@ func checkParams() []string {
 		fmt.Println("Invalid usage")
 		os.Exit(3)
 	}
-	return "-1", "-1"
+	return []string{"-1", "-1"}
 }
 
 func makeUrl() string {
@@ -57,7 +57,7 @@ func makeUrl() string {
 
 func main() {
 	var req string
-	var dat map[string]interface{}
+	//	var dat map[string]interface{}
 
 	req = "https://citymapper.com/api/7/journeys?start=48.813896%2C2.392448&end=48.928378%2C2.1622&sname=7%20Rue%20Maurice%20Grandcoing%2C%20Ivry-sur-Seine&ename=81%20Avenue%20de%20Tobrouk%2C%20Sartrouville&region_id=fr-paris"
 	resp, err := http.Get(req)
@@ -74,16 +74,10 @@ func main() {
 	if err != nil {
 		os.Exit(2)
 	}
-
-	if err := json.Unmarshal(content, &dat); err != nil {
-		panic(err)
+	m, ok := gjson.Parse(string(content)).Value().(map[string][]map[string]interface{})
+	if !ok {
+		fmt.Println("not a map")
+		fmt.Println(ok)
 	}
-
-	sample := dat["journeys"][0]["legs"]
-	//fmt.Println("%v")
-	//	resp, err := soup.Get("https://xkcd.com")
-	//	if err != nil {
-	//		os.Exit(1)
-	//	}
-	//)
+	fmt.Println(m)
 }
