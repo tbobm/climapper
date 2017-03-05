@@ -1,20 +1,31 @@
 #!/usr/bin/env python3
 # coding: utf-8
-import requests
 import os
 import sys
-from bs4 import BeautifulSoup
+import json
+import requests
+import unidecode
 
 __author__ = "Theo Massard <massar_t@etna-alternance.net"
 
-API_URL = """
-https://citymapper.com/api/7/journeys?start=FROM&end=TO&region_id=fr-paris
-"""
+BASE_URL = "https://citymapper.com/"
+ENDPOINT = "api/7/journeys?start=FROM&end=TO&region_id=fr-paris"
+
 
 def get_params():
-    source = os.environ.get("home", False)
-    dest = os.environ.get("work", False)
+    """
+    Collects and returns the environment variables as
+    `lon%Clat` after formatting them.
+    TODO Allow configuration to collect dynamically
+
+    :return: tuple of string containing the formatted destination
+    :rtype str, str
+
+    """
+    source = os.environ.get("MY_HOME", False)
+    dest = os.environ.get("WORK", False)
     if not source or not dest:
+        print("Missing informations about the destinations.", file=sys.stderr)
         sys.exit(1)
     tr_source = source.replace(',', "%2C")
     tr_dest = dest.replace(',', "%2C")
@@ -34,8 +45,9 @@ def make_url(source: str, destination: str) -> str:
     :rtype str
 
     """
-    formatted = API_URL.replace("FROM", source).replace("TO", destination)
-    print(formatted, file=sys.stderr)
+    unformatted_url = BASE_URL + ENDPOINT
+    formatted = unformatted_url.replace(
+            "FROM", source).replace("TO", destination)
     return formatted
 
 
@@ -54,28 +66,31 @@ def make_request(url: str) -> str:
     """
     response = requests.get(url)
     content = response.content
-    return content
+    return unidecode.unidecode(content.decode('utf-8'))
 
 
-def html_to_obj(content: str) -> BeautifulSoup:
-    """Transforms the url's content to BeautifulSoup object
-    
+def content_to_obj(content: str) -> dict :
+    """Transforms the url's content to JSON object
+
     :param content The content of the page
 
     :type content str
 
-    :returns: a BeautifulSoup object
-    :rtype bs4.BeautifulSoup
+    :returns: a JSON object
+    :rtype JSON
 
     """
-    pass
+    obj = json.loads(content)
+    return obj
 
 def main():
     src, dst = get_params()
+    #print("test")
     url = make_url(src, dst)
+    print("Requesting url: " + url)
     content = make_request(url)
-    print(content)
-    ob = html_to_obj(content)
+    #print(content)
+    ob = content_to_obj(content)
     print(type(ob))
 
 
