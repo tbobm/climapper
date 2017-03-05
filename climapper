@@ -1,0 +1,83 @@
+#!/usr/bin/env python3
+# coding: utf-8
+import requests
+import os
+import sys
+from bs4 import BeautifulSoup
+
+__author__ = "Theo Massard <massar_t@etna-alternance.net"
+
+API_URL = """
+https://citymapper.com/api/7/journeys?start=FROM&end=TO&region_id=fr-paris
+"""
+
+def get_params():
+    source = os.environ.get("home", False)
+    dest = os.environ.get("work", False)
+    if not source or not dest:
+        sys.exit(1)
+    tr_source = source.replace(',', "%2C")
+    tr_dest = dest.replace(',', "%2C")
+    return tr_source, tr_dest
+
+
+def make_url(source: str, destination: str) -> str:
+    """Returns the formatted url for the request
+
+    :param source The `from` location of the journey
+    :param destination The `to` location of the journey (actual destination)
+
+    :type source str
+    :type destination str
+
+    :return: the formatted URL to use for the request to the Citymapper API
+    :rtype str
+
+    """
+    formatted = API_URL.replace("FROM", source).replace("TO", destination)
+    print(formatted, file=sys.stderr)
+    return formatted
+
+
+def make_request(url: str) -> str:
+    """
+    Requests the content of the formatted url
+    and returns the content of the page
+
+    :param url The url with the `GET` parameters embedded in
+
+    :type url str
+
+    :returns: content of the url request
+    :rtype str
+
+    """
+    response = requests.get(url)
+    content = response.content
+    return content
+
+
+def html_to_obj(content: str) -> BeautifulSoup:
+    """Transforms the url's content to BeautifulSoup object
+    
+    :param content The content of the page
+
+    :type content str
+
+    :returns: a BeautifulSoup object
+    :rtype bs4.BeautifulSoup
+
+    """
+    pass
+
+def main():
+    src, dst = get_params()
+    url = make_url(src, dst)
+    content = make_request(url)
+    print(content)
+    ob = html_to_obj(content)
+    print(type(ob))
+
+
+if __name__ == "__main__":
+    main()

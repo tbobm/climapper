@@ -1,9 +1,9 @@
 package main
 
 import (
-	//	"encoding/json"
+	"encoding/json"
 	"fmt"
-	"github.com/tidwall/gjson"
+	//"github.com/tidwall/gjson"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -12,13 +12,13 @@ import (
 )
 
 type Leg struct {
-	Mode              string    `json:"mode"`
-	ArrivalTime       time.Time `json:"arrival_time"`
-	DepartureTime     time.Time `json:"departure_time"`
-	DistanceMeters    int       `json:"distance_meters"`
-	Duration          int       `json:"duration_seconds"`
-	InStation         int       `json:"in_station_seconds"`
-	InStationWalkKind int       `json:"in_station_walk_kind"`
+	Mode              string
+	ArrivalTime       time.Time
+	DepartureTime     time.Time
+	DistanceMeters    int
+	Duration          int
+	InStation         int
+	InStationWalkKind int
 }
 
 type Legs struct {
@@ -57,6 +57,7 @@ func makeUrl() string {
 
 func main() {
 	var req string
+	journeys := []Leg{}
 	//	var dat map[string]interface{}
 
 	req = "https://citymapper.com/api/7/journeys?start=48.813896%2C2.392448&end=48.928378%2C2.1622&sname=7%20Rue%20Maurice%20Grandcoing%2C%20Ivry-sur-Seine&ename=81%20Avenue%20de%20Tobrouk%2C%20Sartrouville&region_id=fr-paris"
@@ -74,10 +75,22 @@ func main() {
 	if err != nil {
 		os.Exit(2)
 	}
-	m, ok := gjson.Parse(string(content)).Value().(map[string][]map[string]interface{})
-	if !ok {
-		fmt.Println("not a map")
-		fmt.Println(ok)
+	var data map[string][]map[string][]interface{}
+	err = json.Unmarshal(content, &data)
+	for i := range data["journeys"] {
+		item := data["journeys"][i]["legs"]
+		if item != nil {
+			for j := range item {
+				step := item[j]
+				fmt.Println("%v", step)
+			}
+			os.Exit(0)
+			//journeys = append(journeys, item)
+		}
 	}
-	fmt.Println(m)
+	//if !ok {
+	//fmt.Println("not a map")
+	//fmt.Println(ok)
+	//}
+	fmt.Println(journeys[0])
 }
