@@ -1,3 +1,0 @@
-package: github.com/massard-t/climapper
-import:
-- package: github.com/tidwall/gjson
