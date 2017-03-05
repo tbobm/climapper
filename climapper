@@ -40,11 +40,20 @@ def get_params():
     :rtype str, str
 
     """
-    source = os.environ.get("MY_HOME", False)
-    dest = os.environ.get("WORK", False)
-    if not source or not dest:
+    home = os.environ.get("MY_HOME", False)
+    work = os.environ.get("WORK", False)
+
+    if not home or not work:
         print("Missing informations about the destinations.", file=sys.stderr)
         sys.exit(1)
+
+    if False:
+        source = home
+        dest = work
+    else:
+        source = work
+        dest = home
+
     tr_source = source.replace(',', "%2C")
     tr_dest = dest.replace(',', "%2C")
     return tr_source, tr_dest

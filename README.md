@@ -1,8 +1,20 @@
 # climapper
 
-Simple tool that for the Citymapper API made by a lazy person
+Simple tool that for the Citymapper API made by a lazy person.
 
 ## Installation
+
+### Prerequisites
+
+#### Dependencies
+
+Climapper works perfectly under python3. It uses 2 pip3 packages, `Unidecode` and `requests`.
+
+```bash
+sudo -H pip3 install -r requirements.txt
+```
+
+#### Configuration
 
 In order to get climapper to work efficiently, you have to set a `home` variable, based on the LAT and LONG of your destination.
 
@@ -30,15 +42,19 @@ $ climapper home
 |------------------------------|
 |..............................|
 |      Home in 89 min          |
+|------------------------------|
 ```
 
 
 ## Todos
 
-- [ ] Collect destination and current location (ENV variables ?)
-- [ ] Make a call to the API
+- [x] Collect destination and current location (ENV variables ?)
+- [x] Make a call to the API
 - [ ] Parse the results
 - [ ] Display them gracefully
+- [ ] Manage CLI args
+- [ ] Maybe use [Fire](https://github.com/google/python-fire)
+
 
 
 ### Resources
