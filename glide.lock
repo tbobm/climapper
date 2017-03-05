@@ -1,8 +1,0 @@
-hash: 03a6f7563e233d85d89be79187afb53efb4380c1fd37dcd813860d60ad43b423
-updated: 2017-02-28T18:45:42.832929874+01:00
-imports:
-- name: github.com/tidwall/gjson
-  version: 09d1c5c5bc64e094394dfe2150220d906c55ac37
-- name: github.com/tidwall/match
-  version: 173748da739a410c5b0b813b956f89ff94730b4c
-testImports: []
