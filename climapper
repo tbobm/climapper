@@ -3,13 +3,31 @@
 import os
 import sys
 import json
+import math
 import requests
 import unidecode
 
+
 __author__ = "Theo Massard <massar_t@etna-alternance.net"
+
 
 BASE_URL = "https://citymapper.com/"
 ENDPOINT = "api/7/journeys?start=FROM&end=TO&region_id=fr-paris"
+
+
+def f_minutes(seconds: int) -> int:
+    """Simply formats time(int) to minutes, rounding to ceil
+
+    :param seconds The value to format in seconds
+
+    :type seconds int
+
+    :returns: The value of seconds formatted in seconds
+    :rtype int
+
+    """
+    val = math.ceil(seconds / 60)
+    return val
 
 
 def get_params():
@@ -76,12 +94,34 @@ def content_to_obj(content: str) -> dict :
 
     :type content str
 
-    :returns: a JSON object
+    :returns: a JSON object containing the journeys
     :rtype JSON
 
     """
     obj = json.loads(content)
     return obj
+
+
+def get_journey_info(leg: dict) -> dict:
+    """TODO: Docstring for get_journey_info.
+
+    :param leg A dictionnary containing the leg's informations
+
+    :type leg dict
+
+    :returns: Another object, easier to display, about the leg
+    :rtype dict
+
+    """
+    journey_info = dict()
+    journey_info['journey_duration'] = f_minutes(leg['duration_seconds'])
+    journey_info['walk_duration'] = f_minutes(leg['walk_seconds'])
+    #for key, value in leg.items():
+    #    print(key,":", value)
+
+    #print(leg.keys())
+    print(journey_info)
+
 
 def main():
     src, dst = get_params()
@@ -91,7 +131,9 @@ def main():
     content = make_request(url)
     #print(content)
     ob = content_to_obj(content)
-    print(type(ob))
+    for nbr, journey in enumerate(ob['journeys']):
+        sys.stdout.write("Journey #" + str(nbr))
+        get_journey_info(journey)
 
 
 if __name__ == "__main__":
