@@ -25,8 +25,8 @@ In order to get climapper to work efficiently, you have to set a `home` variable
 ```bash
 # In your bash_profile (or bashrc)
 
-export work="48.813896,2.392448"
-export home="48.928378,2.162200"
+export WORK="48.813896,2.392448"
+export MY_HOME="48.928378,2.162200"
 ```
 
 
