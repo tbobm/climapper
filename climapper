@@ -169,6 +169,9 @@ def get_journey_info(journey: dict) -> dict:
         step['start_date'], step['start_hour'] = dt_to_s(ele['departure_time'])
         step['end_date'], step['end_hour'] = dt_to_s(ele['arrival_time'])
         step['distance'] = ele.get('distance_meters', '')
+        if ele.get('stops'):
+            step['transit_src'] = ele['stops'][0]['name']
+            step['transit_dest'] = ele['stops'][-1]['name']
         steps.append(step)
 
     print("Journey Infos:", journey_info)
@@ -191,6 +194,8 @@ def main():
     #print(content)
     ob = content_to_obj(content)
     for nbr, journey in enumerate(ob['journeys']):
+        if nbr != 1:
+            continue
         sys.stdout.write("Journey #%i " % nbr)
         get_journey_info(journey)
 
