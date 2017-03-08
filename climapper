@@ -4,9 +4,9 @@ import os
 import sys
 import json
 import math
+import datetime
 import requests
 import unidecode
-
 
 __author__ = "Theo Massard <massar_t@etna-alternance.net"
 
@@ -111,8 +111,41 @@ def content_to_obj(content: str) -> dict :
     return obj
 
 
-def get_journey_info(leg: dict) -> dict:
-    """TODO: Docstring for get_journey_info.
+def dt_to_s(s_time: str) -> str:
+    """TODO: Simple function parsing a basic timestamp
+
+    :param s_time The string to parse
+
+    :type s_time str
+
+    :returns: String reformatted
+    :rtype str
+
+    """
+    splitted = s_time.split('-')
+    try:
+        year = s_time[:4]
+        month = s_time[5:7]
+        day = s_time[8:10]
+        hour = s_time[11:13]
+        minute = s_time[14:16]
+        seconds = s_time[17:19]
+        tmp = "%s/%s/%s %s:%s:%s" % (year, month, day, hour, minute, seconds)
+        return tmp
+    except IndexError:
+        return s_time
+
+def function(arg1):
+    """TODO: Docstring for function.
+
+    :arg1: TODO
+    :returns: TODO
+
+    """
+    pass
+
+def get_journey_info(journey: dict) -> dict:
+    """Formats the JSON for easy display
 
     :param leg A dictionnary containing the leg's informations
 
@@ -123,13 +156,32 @@ def get_journey_info(leg: dict) -> dict:
 
     """
     journey_info = dict()
-    journey_info['journey_duration'] = f_minutes(leg['duration_seconds'])
-    journey_info['walk_duration'] = f_minutes(leg['walk_seconds'])
-    #for key, value in leg.items():
-    #    print(key,":", value)
+    journey_info['journey_duration'] = f_minutes(journey['duration_seconds'])
+    journey_info['walk_duration'] = f_minutes(journey['walk_seconds'])
+    steps = []
+    legs = journey['legs']
 
-    #print(leg.keys())
+    for ele in legs:
+        print(ele.keys())
+        for e, v in ele.items():
+            print(e, ": ", v)
+        print()
+        step = dict()
+        mode = ele['mode']
+        step['mode'] = mode
+        if mode == 'transit':
+            try:
+                step['transp_name'] = ele['routes'][0]['display_name']
+            except IndexError:
+                step['transp_name'] = 'UKNOWN'
+        step['start'] = dt_to_s(ele['departure_time'])
+        step['end'] = dt_to_s(ele['arrival_time'])
+        step['distance'] = ele.get('distance_meters', '')
+        steps.append(step)
+
     print(journey_info)
+    print(steps)
+    sys.exit()
 
 
 def main():
@@ -141,7 +193,7 @@ def main():
     #print(content)
     ob = content_to_obj(content)
     for nbr, journey in enumerate(ob['journeys']):
-        sys.stdout.write("Journey #" + str(nbr))
+        sys.stdout.write("Journey #%i " % nbr)
         get_journey_info(journey)
 
 
