@@ -4,13 +4,13 @@ import os
 import sys
 import json
 import math
-import datetime
 import requests
 import unidecode
 
 __author__ = "Theo Massard <massar_t@etna-alternance.net"
 
 
+NO_INTERNET = True
 BASE_URL = "https://citymapper.com/"
 ENDPOINT = "api/7/journeys?start=FROM&end=TO&region_id=fr-paris"
 
@@ -36,7 +36,7 @@ def get_params():
     `lon%Clat` after formatting them.
     TODO Allow configuration to collect dynamically
 
-    :return: tuple of string containing the formatted destination
+    :returns: tuple of string containing the formatted destination
     :rtype str, str
 
     """
@@ -118,31 +118,23 @@ def dt_to_s(s_time: str) -> str:
 
     :type s_time str
 
-    :returns: String reformatted
-    :rtype str
+    :returns: tuple of reformatted strings, as date and hour
+    :rtype str, str
 
     """
-    splitted = s_time.split('-')
-    try:
+    try:  # Of course I hard coded these value. -> no need to import datetime
         year = s_time[:4]
         month = s_time[5:7]
         day = s_time[8:10]
         hour = s_time[11:13]
         minute = s_time[14:16]
         seconds = s_time[17:19]
-        tmp = "%s/%s/%s %s:%s:%s" % (year, month, day, hour, minute, seconds)
-        return tmp
+        date = "%s/%s/%s" % (year, month, day)
+        date_hours = "%s:%s:%s" % (hour, minute, seconds) 
+        return date, date_hours
     except IndexError:
-        return s_time
+        return s_time, None
 
-def function(arg1):
-    """TODO: Docstring for function.
-
-    :arg1: TODO
-    :returns: TODO
-
-    """
-    pass
 
 def get_journey_info(journey: dict) -> dict:
     """Formats the JSON for easy display
@@ -174,13 +166,14 @@ def get_journey_info(journey: dict) -> dict:
                 step['transp_name'] = ele['routes'][0]['display_name']
             except IndexError:
                 step['transp_name'] = 'UKNOWN'
-        step['start'] = dt_to_s(ele['departure_time'])
-        step['end'] = dt_to_s(ele['arrival_time'])
+        step['start_date'], step['start_hour'] = dt_to_s(ele['departure_time'])
+        step['end_date'], step['end_hour'] = dt_to_s(ele['arrival_time'])
         step['distance'] = ele.get('distance_meters', '')
         steps.append(step)
 
-    print(journey_info)
-    print(steps)
+    print("Journey Infos:", journey_info)
+    for s in steps:
+        print(s)
     sys.exit()
 
 
@@ -189,7 +182,12 @@ def main():
     #print("test")
     url = make_url(src, dst)
     print("Requesting url: " + url)
-    content = make_request(url)
+    if not NO_INTERNET:
+        content = make_request(url)
+    else:
+        with open('req.json', 'r') as var:
+            content = var.readlines()[0]
+    print(len(content))
     #print(content)
     ob = content_to_obj(content)
     for nbr, journey in enumerate(ob['journeys']):
