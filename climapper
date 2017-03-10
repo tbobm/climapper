@@ -10,10 +10,11 @@ import unidecode
 __author__ = "Theo Massard <massar_t@etna-alternance.net"
 
 
-NO_INTERNET = True
 BASE_URL = "https://citymapper.com/"
 ENDPOINT = "api/7/journeys?start=FROM&end=TO&region_id=fr-paris"
 
+NO_INTERNET = True
+IGNORE_DATE = True
 
 def f_minutes(seconds: int) -> int:
     """Simply formats time(int) to minutes, rounding to ceil
@@ -146,6 +147,37 @@ def dt_to_s(s_time: str) -> str:
     except IndexError:
         return s_time, None
 
+def manage_durations(journey: dict, journey_info: dict) -> None:
+    """
+    Extracts informations from journey dict about the durations.
+    Adds them to journey_info dict
+
+    :journey: Original JSON
+    :journey_info: Collector dictionnary
+
+    :returns: None
+
+    """
+    journey_info['journey_duration'] = f_minutes(journey.get('duration_seconds'))
+    journey_info['walk_duration'] = f_minutes(journey.get('walk_seconds'))
+
+
+def manage_date(ele: dict, step: dict) -> None:
+    """Extracts date from current element and adds it to step dict
+
+    :element: JSON from original JSON
+    :step: Collector dictionnary
+    :returns: None
+
+    """
+    s_date, s_hour = dt_to_s(ele.get('departure_time'))
+    e_date, e_hour = dt_to_s(ele.get('arrival_time'))
+    step['start_hour'] = s_hour
+    step['end_hour'] = e_hour
+    if not IGNORE_DATE:
+        step['end_date'] = e_date
+        step['start_date'] = s_date
+
 
 def get_journey_info(journey: dict) -> dict:
     """Formats the JSON for easy display
@@ -159,10 +191,9 @@ def get_journey_info(journey: dict) -> dict:
 
     """
     journey_info = dict()
-    journey_info['journey_duration'] = f_minutes(journey.get('duration_seconds'))
-    journey_info['walk_duration'] = f_minutes(journey.get('walk_seconds'))
     steps = []
     legs = journey.get('legs')
+    manage_durations(journey, journey_info)
 
     for ele in legs:
         print(ele.keys())
@@ -177,8 +208,7 @@ def get_journey_info(journey: dict) -> dict:
                 step['transp_name'] = ele['routes'][0]['display_name']
             except IndexError:
                 step['transp_name'] = 'UKNOWN'
-        step['start_date'], step['start_hour'] = dt_to_s(ele.get('departure_time'))
-        step['end_date'], step['end_hour'] = dt_to_s(ele.get('arrival_time'))
+        manage_date(ele, step)
         step['distance'] = ele.get('distance_meters', '')
         if ele.get('stops'):
             step['transit_src'] = ele['stops'][0].get('name')
