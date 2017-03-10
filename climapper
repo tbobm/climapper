@@ -95,6 +95,17 @@ def make_request(url: str) -> str:
     content = response.content
     return unidecode.unidecode(content.decode('utf-8'))
 
+def manage_duration(journey: dict):
+    """Formats the transit and walking durations of the journey
+
+    :param journey The result of the API request containing journey infos.
+
+    :type journey dict
+
+    :returns: TODO
+
+    """
+    return
 
 def content_to_obj(content: str) -> dict :
     """Transforms the url's content to JSON object
@@ -148,10 +159,10 @@ def get_journey_info(journey: dict) -> dict:
 
     """
     journey_info = dict()
-    journey_info['journey_duration'] = f_minutes(journey['duration_seconds'])
-    journey_info['walk_duration'] = f_minutes(journey['walk_seconds'])
+    journey_info['journey_duration'] = f_minutes(journey.get('duration_seconds'))
+    journey_info['walk_duration'] = f_minutes(journey.get('walk_seconds'))
     steps = []
-    legs = journey['legs']
+    legs = journey.get('legs')
 
     for ele in legs:
         print(ele.keys())
@@ -166,12 +177,12 @@ def get_journey_info(journey: dict) -> dict:
                 step['transp_name'] = ele['routes'][0]['display_name']
             except IndexError:
                 step['transp_name'] = 'UKNOWN'
-        step['start_date'], step['start_hour'] = dt_to_s(ele['departure_time'])
-        step['end_date'], step['end_hour'] = dt_to_s(ele['arrival_time'])
+        step['start_date'], step['start_hour'] = dt_to_s(ele.get('departure_time'))
+        step['end_date'], step['end_hour'] = dt_to_s(ele.get('arrival_time'))
         step['distance'] = ele.get('distance_meters', '')
         if ele.get('stops'):
-            step['transit_src'] = ele['stops'][0]['name']
-            step['transit_dest'] = ele['stops'][-1]['name']
+            step['transit_src'] = ele['stops'][0].get('name')
+            step['transit_dest'] = ele['stops'][-1].get('name')
         steps.append(step)
 
     print("Journey Infos:", journey_info)
@@ -182,7 +193,6 @@ def get_journey_info(journey: dict) -> dict:
 
 def main():
     src, dst = get_params()
-    #print("test")
     url = make_url(src, dst)
     print("Requesting url: " + url)
     if not NO_INTERNET:
