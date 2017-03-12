@@ -16,6 +16,7 @@ ENDPOINT = "api/7/journeys?start=FROM&end=TO&region_id=fr-paris"
 NO_INTERNET = True
 IGNORE_DATE = True
 
+
 def f_minutes(seconds: int) -> int:
     """Simply formats time(int) to minutes, rounding to ceil
 
@@ -196,10 +197,10 @@ def get_journey_info(journey: dict) -> dict:
     manage_durations(journey, journey_info)
 
     for ele in legs:
-        print(ele.keys())
-        for e, v in ele.items():
-            print(e, ": ", v)
-        print()
+        #print(ele.keys())
+        #for e, v in ele.items():
+            #print(e, ": ", v)
+        #print()
         step = dict()
         mode = ele['mode']
         step['mode'] = mode
@@ -209,16 +210,48 @@ def get_journey_info(journey: dict) -> dict:
             except IndexError:
                 step['transp_name'] = 'UKNOWN'
         manage_date(ele, step)
-        step['distance'] = ele.get('distance_meters', '')
+        step['distance'] = ele.get('distance_meters')
         if ele.get('stops'):
             step['transit_src'] = ele['stops'][0].get('name')
             step['transit_dest'] = ele['stops'][-1].get('name')
         steps.append(step)
 
-    print("Journey Infos:", journey_info)
-    for s in steps:
-        print(s)
-    sys.exit()
+    #print("Journey Infos:", journey_info)
+    #for s in steps:
+        #print(s)
+    return steps
+
+
+def display_journey(steps: list):
+    """Pretty displays the steps of a journey
+
+    :steps: list: TODO
+    :returns: TODO
+
+    """
+    for idx, item in enumerate(steps):
+        mode = item.get("mode")
+        sys.stdout.write("%s : " % mode)
+        sys.stdout.write("%s - %s" % (
+            item.get("start_hour"),
+            item.get("end_hour"),
+            )
+        )
+        if mode == "walk":
+            distance = item.get("distance")
+            if distance:
+                print(" - %i meters" % item.get("distance"))
+            else:
+                print(" - Walking in station")
+        elif mode == "transit":
+            print("\n%s - %s > %s" % (
+                item.get("transp_name"),
+                item.get("transit_src"),
+                item.get("transit_dest")
+                )
+            )
+        print()
+
 
 
 def main():
@@ -227,17 +260,17 @@ def main():
     print("Requesting url: " + url)
     if not NO_INTERNET:
         content = make_request(url)
-    else:
+    else:  # Debug mode
         with open('req.json', 'r') as var:
             content = var.readlines()[0]
-    print(len(content))
     #print(content)
     ob = content_to_obj(content)
     for nbr, journey in enumerate(ob['journeys']):
         if nbr != 1:
             continue
-        sys.stdout.write("Journey #%i " % nbr)
-        get_journey_info(journey)
+        print("Journey #%i " % nbr)
+        steps = get_journey_info(journey)
+        display_journey(steps)
 
 
 if __name__ == "__main__":
