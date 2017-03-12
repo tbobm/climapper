@@ -51,8 +51,8 @@ $ climapper home
 
 - [x] Collect destination and current location (ENV variables ?)
 - [x] Make a call to the API
-- [ ] Parse the results
-- [ ] Display them gracefully
+- [x] Parse the results
+- [x] Display them gracefully
 - [ ] Manage CLI args
 - [ ] Maybe use [Fire](https://github.com/google/python-fire)
 
