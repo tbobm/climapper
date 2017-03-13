@@ -15,7 +15,7 @@ Climapper works perfectly under python3. It uses 2 pip3 packages, `Unidecode` an
 sudo -H pip3 install -r requirements.txt
 ```
 
-#### Installtion
+#### Installation
 
 Simply run the installation script. It will create a `~/bin` directory, and a symbolic link to your climapper script.
 This configuration allows you to update the script without having to run the installation script again.
