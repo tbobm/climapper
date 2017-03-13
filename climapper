@@ -15,6 +15,10 @@ ENDPOINT = "api/7/journeys?start=FROM&end=TO&region_id=fr-paris"
 
 NO_INTERNET = True
 IGNORE_DATE = True
+BASE_H = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0)"
+SPEC_H = " Gecko/20100101 Firefox/32.0"
+USER_AGENT = BASE_H + SPEC_H
+HEADERS = {'user-agent': USER_AGENT}
 
 
 def f_minutes(seconds: int) -> int:
@@ -93,9 +97,10 @@ def make_request(url: str) -> str:
     :rtype str
 
     """
-    response = requests.get(url)
+    response = requests.get(url, headers=HEADERS)
     content = response.content
     return unidecode.unidecode(content.decode('utf-8'))
+
 
 def manage_duration(journey: dict):
     """Formats the transit and walking durations of the journey
@@ -109,7 +114,8 @@ def manage_duration(journey: dict):
     """
     return
 
-def content_to_obj(content: str) -> dict :
+
+def content_to_obj(content: str) -> dict:
     """Transforms the url's content to JSON object
 
     :param content The content of the page
@@ -143,10 +149,11 @@ def dt_to_s(s_time: str) -> str:
         minute = s_time[14:16]
         seconds = s_time[17:19]
         date = "%s/%s/%s" % (year, month, day)
-        date_hours = "%s:%s:%s" % (hour, minute, seconds) 
+        date_hours = "%s:%s:%s" % (hour, minute, seconds)
         return date, date_hours
     except IndexError:
         return s_time, None
+
 
 def manage_durations(journey: dict, journey_info: dict) -> None:
     """
@@ -159,7 +166,9 @@ def manage_durations(journey: dict, journey_info: dict) -> None:
     :returns: None
 
     """
-    journey_info['journey_duration'] = f_minutes(journey.get('duration_seconds'))
+    journey_info['journey_duration'] = f_minutes(journey.get(
+        'duration_seconds')
+        )
     journey_info['walk_duration'] = f_minutes(journey.get('walk_seconds'))
 
 
@@ -197,10 +206,6 @@ def get_journey_info(journey: dict) -> dict:
     manage_durations(journey, journey_info)
 
     for ele in legs:
-        #print(ele.keys())
-        #for e, v in ele.items():
-            #print(e, ": ", v)
-        #print()
         step = dict()
         mode = ele['mode']
         step['mode'] = mode
@@ -216,9 +221,6 @@ def get_journey_info(journey: dict) -> dict:
             step['transit_dest'] = ele['stops'][-1].get('name')
         steps.append(step)
 
-    #print("Journey Infos:", journey_info)
-    #for s in steps:
-        #print(s)
     return steps
 
 
@@ -253,7 +255,6 @@ def display_journey(steps: list):
         print()
 
 
-
 def main():
     src, dst = get_params()
     url = make_url(src, dst)
@@ -263,7 +264,6 @@ def main():
     else:  # Debug mode
         with open('req.json', 'r') as var:
             content = var.readlines()[0]
-    #print(content)
     ob = content_to_obj(content)
     for nbr, journey in enumerate(ob['journeys']):
         if nbr != 1:
