@@ -13,7 +13,7 @@ __author__ = "Theo Massard <massar_t@etna-alternance.net"
 BASE_URL = "https://citymapper.com/"
 ENDPOINT = "api/7/journeys?start=FROM&end=TO&region_id=fr-paris"
 
-NO_INTERNET = True
+NO_INTERNET = False
 IGNORE_DATE = True
 BASE_H = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0)"
 SPEC_H = " Gecko/20100101 Firefox/32.0"
