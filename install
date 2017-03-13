@@ -96,5 +96,6 @@ else
 	fi
 fi
 
-__d_blue "In order for the modifications to be effective, please source your $PROFILE_FILE by running\nsource $PROFILE_FILE"
+__d_blue "In order for the modifications to be effective, please source your $PROFILE_FILE by running"
+__d_blue "source $PROFILE_FILE"
 __d_blue "Thanks for using the climapper installer !"
