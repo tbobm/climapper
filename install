@@ -1,0 +1,100 @@
+#!/bin/bash
+
+USER_BIN=${1:-$HOME/bin}
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+EXECUTABLE_NAME="climapper"
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+YELLOW='\033[0;33m'
+PLAIN='\033[0m'
+
+
+
+_command_exists () {
+	type "$1" &> /dev/null
+}
+
+__d_blue() {
+	printf "${BLUE}%s${PLAIN}\n" "$1"
+}
+
+__d_red() {
+	printf "${RED}%s${PLAIN}\n" "$1"
+}
+
+__d_green() {
+	printf "${GREEN}%s${PLAIN}\n" "$1"
+}
+
+__d_yellow() {
+	printf "${YELLOW}%s${PLAIN}\n" "$1"
+}
+
+
+_welcome() {
+	printf "${BLUE}%s${PLAIN}\n" "Welcome to the climapper installer"
+}
+
+_welcome
+
+__d_yellow "Checking if $USER_BIN exists"
+if [ ! -d "$USER_BIN" ];
+then
+	__d_yellow "$USER_BIN doens't exists."
+	mkdir "$USER_BIN"
+	if [ $? -eq 0 ];
+	then
+		__d_green "$USER_BIN successfully created"
+	else
+		__d_red "Something went wrong while creating $USER_BIN, exitting"
+		exit 1
+	fi
+else
+	__d_green "$USER_BIN exists."
+fi
+
+__d_yellow "Trying to create symbolic link to $USER_BIN/climapper."
+
+ln -s "$DIR/$EXECUTABLE_NAME" "$USER_BIN/$EXECUTABLE_NAME"
+
+if [ $? -eq 0 ];
+then
+	__d_green "Symbolic link successfully created"
+else
+	__d_red "Something went wrong while creating symbolic link, exitting"
+	exit 1
+fi
+
+__d_yellow "Checking if $USER_BIN is in PATH"
+
+echo "$PATH" | grep "$USER_BIN"
+if [ $? -eq 0 ];
+then
+	__d_green "$USER_BIN found in PATH"
+else
+	__d_yellow "$USER_BIN not found in PATH"
+	__d_yellow "Adding $USER_BIN to PATH"
+	if [ -f "$HOME/.bash_profile" ];
+	then
+		PROFILE_FILE="$HOME/.bash_profile"
+	elif [ -f "$HOME/.bashrc" ];
+	then
+		PROFILE_FILE="$HOME/.bashrc"
+	fi
+	{
+		echo "#### Installed by Climapper Installer ####"
+		echo "export PATH=$PATH:$USER_BIN"
+	} >> "$PROFILE_FILE"
+	if [ $? -eq 0 ];
+	then
+		__d_green "$USER_BIN added to PATH in $PROFILE_FILE"
+	else
+		__d_red "Couldn't add $USER_BIN to PATH in $PROFILE_FILE"
+		exit 2
+	fi
+fi
+
+__d_blue "In order for the modifications to be effective, please source your $PROFILE_FILE by running\nsource $PROFILE_FILE"
+__d_blue "Thanks for using the climapper installer !"
