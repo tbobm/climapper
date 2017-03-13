@@ -36,7 +36,7 @@ def f_minutes(seconds: int) -> int:
     return val
 
 
-def get_params():
+def get_params(home_var=None, work_var=None) -> (str, str):
     """
     Collects and returns the environment variables as
     `lon%Clat` after formatting them.
@@ -46,8 +46,12 @@ def get_params():
     :rtype str, str
 
     """
-    home = os.environ.get("MY_HOME", False)
-    work = os.environ.get("WORK", False)
+    if not home_var:
+        home_var = "MY_HOME"
+    if not work_var:
+        work_var = "WORK"
+    home = os.environ.get(home_var, False)
+    work = os.environ.get(work_var, False)
 
     if not home or not work:
         print("Missing informations about the destinations.", file=sys.stderr)
@@ -100,19 +104,6 @@ def make_request(url: str) -> str:
     response = requests.get(url, headers=HEADERS)
     content = response.content
     return unidecode.unidecode(content.decode('utf-8'))
-
-
-def manage_duration(journey: dict):
-    """Formats the transit and walking durations of the journey
-
-    :param journey The result of the API request containing journey infos.
-
-    :type journey dict
-
-    :returns: TODO
-
-    """
-    return
 
 
 def content_to_obj(content: str) -> dict:
@@ -189,6 +180,17 @@ def manage_date(ele: dict, step: dict) -> None:
         step['start_date'] = s_date
 
 
+def manage_distance(ele: dict, step: dict) -> dict:
+    """TODO: Docstring for manage_distance.
+
+    :journey: dict: TODO
+    :step: dict: TODO
+    :returns: TODO
+
+    """
+    step['distance'] = ele.get('distance_meters')
+
+
 def get_journey_info(journey: dict) -> dict:
     """Formats the JSON for easy display
 
@@ -215,7 +217,7 @@ def get_journey_info(journey: dict) -> dict:
             except IndexError:
                 step['transp_name'] = 'UKNOWN'
         manage_date(ele, step)
-        step['distance'] = ele.get('distance_meters')
+        manage_distance(ele, step)
         if ele.get('stops'):
             step['transit_src'] = ele['stops'][0].get('name')
             step['transit_dest'] = ele['stops'][-1].get('name')
@@ -233,8 +235,8 @@ def display_journey(steps: list):
     """
     for idx, item in enumerate(steps):
         mode = item.get("mode")
-        sys.stdout.write("%s : " % mode)
-        sys.stdout.write("%s - %s" % (
+        sys.stdout.write("%s : %s - %s" % (
+            mode,
             item.get("start_hour"),
             item.get("end_hour"),
             )
@@ -255,10 +257,11 @@ def display_journey(steps: list):
         print()
 
 
-def main():
+def main(debug=True, start=None, dest=None):
     src, dst = get_params()
     url = make_url(src, dst)
-    print("Requesting url: " + url)
+    if debug:
+        print("Requesting url: " + url)
     if not NO_INTERNET:
         content = make_request(url)
     else:  # Debug mode
