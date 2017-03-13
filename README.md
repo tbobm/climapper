@@ -54,6 +54,7 @@ $ climapper home
 - [x] Parse the results
 - [x] Display them gracefully
 - [ ] Manage CLI args
+- [ ] Manage configuration trough specific file (~/.config/climapper.json?)
 - [ ] Maybe use [Fire](https://github.com/google/python-fire)
 
 
