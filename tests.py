@@ -50,3 +50,10 @@ def test_manage_distance():
     climapper.manage_distance(resp_dict, base_dict)
     assert correct_ele == base_dict
     assert correct_ele['distance'] == base_dict['distance']
+
+
+def test_content_to_obj():
+    base_string = '{"test":true, "Should": "Be True"}'
+    valid_obj = {"test": True, "Should": "Be True"}
+    base_obj = climapper.content_to_obj(base_string)
+    assert base_obj == valid_obj
