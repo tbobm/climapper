@@ -6,6 +6,7 @@ import json
 import math
 import requests
 import unidecode
+import argparse
 
 __author__ = "Theo Massard <massar_t@etna-alternance.net"
 
@@ -13,12 +14,36 @@ __author__ = "Theo Massard <massar_t@etna-alternance.net"
 BASE_URL = "https://citymapper.com/"
 ENDPOINT = "api/7/journeys?start=FROM&end=TO&region_id=fr-paris"
 
-NO_INTERNET = False
+NO_INTERNET = True
 IGNORE_DATE = True
 BASE_H = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0)"
 SPEC_H = " Gecko/20100101 Firefox/32.0"
 USER_AGENT = BASE_H + SPEC_H
 HEADERS = {'user-agent': USER_AGENT}
+
+
+def create_parser():
+    """Create the parser object to use later.
+    also parses the argument (TBD later)
+
+    :returns: object
+
+    """
+    parser = argparse.ArgumentParser()
+    add_arg = parser.add_argument
+    add_arg(
+            '--no-internet', type=bool,
+            # description="Set to True if working without Internet.",
+            default=False,
+            help="Shouldn't be set to True if you're a user."
+            )
+    add_arg(
+            '--ignore-date', type=bool,
+            # description="Set to True if you don't care about the date",
+            default=True,
+            help="Currently pointless to set to False"
+            )
+    parser.parse_args()
 
 
 def f_minutes(seconds):
@@ -280,4 +305,5 @@ def main(debug=True, start=None, dest=None):
 
 
 if __name__ == "__main__":
-    main()
+    # main()
+    create_parser()
