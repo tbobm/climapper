@@ -49,3 +49,4 @@ def test_manage_distance():
     resp_dict = {'distance_meters': 1240}
     climapper.manage_distance(resp_dict, base_dict)
     assert correct_ele == base_dict
+    assert correct_ele['distance'] == base_dict['distance']
