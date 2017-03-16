@@ -50,8 +50,8 @@ def get_params(home_var=None, work_var=None):
         home_var = "MY_HOME"
     if not work_var:
         work_var = "WORK"
-    home = os.environ.get(home_var, False)
-    work = os.environ.get(work_var, False)
+    home = os.environ.get(home_var)
+    work = os.environ.get(work_var)
 
     if not home or not work:
         print("Missing informations about the destinations.")
@@ -101,7 +101,10 @@ def make_request(url):
     :rtype str
 
     """
-    response = requests.get(url, headers=HEADERS)
+    try:
+        response = requests.get(url, headers=HEADERS)
+    except Exception as e:
+        raise e
     content = response.content
     return unidecode.unidecode(content.decode('utf-8'))
 
