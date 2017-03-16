@@ -20,7 +20,7 @@ install:
   - pip install coveralls
 
 # command to run tests
-script: py.test tests.py
+script: py.test --cov climapper tests.py
 
 after_success:
         coveralls
