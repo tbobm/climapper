@@ -1,6 +1,6 @@
 # <center>![Citymapper](https://lh6.ggpht.com/Imb9kzIzJPanYvoMhRzT04AemnqlYzS2RmU4rHX-Hoy3WONLzRhUo3j9bIJJi1N7we8F=w300)</center> Climapper <center>![Citymapper](https://lh6.ggpht.com/Imb9kzIzJPanYvoMhRzT04AemnqlYzS2RmU4rHX-Hoy3WONLzRhUo3j9bIJJi1N7we8F=w300)</center>
 
-[![Build Status](https://travis-ci.org/massard-t/climapper.svg?branch=master)](https://travis-ci.org/massard-t/climapper)
+[![Build Status](https://travis-ci.org/massard-t/climapper.svg?branch=master)](https://travis-ci.org/massard-t/climapper) [![Coverage Status](https://coveralls.io/repos/github/massard-t/climapper/badge.svg?branch=master)](https://coveralls.io/github/massard-t/climapper?branch=master)
 
 Simple tool that for the Citymapper API made by a lazy person.
 This project isn't related to Citymapper in any way, totally unofficial.
