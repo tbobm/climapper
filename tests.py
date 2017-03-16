@@ -57,3 +57,38 @@ def test_content_to_obj():
     valid_obj = {"test": True, "Should": "Be True"}
     base_obj = climapper.content_to_obj(base_string)
     assert base_obj == valid_obj
+
+
+def test_manage_date_ignore_date():
+    base_depart = "1994-01-01 18:32:18.299"
+    base_arrive = "1994-11-21 19:33:29.299"
+    test_dict = dict()
+    valid_dict = dict()
+    base_dict = {
+            "departure_time": base_depart,
+            "arrival_time": base_arrive
+            }
+
+    valid_dict['start_hour'] = '18:32:18'
+    valid_dict['end_hour'] = '19:33:29'
+    climapper.manage_date(base_dict, test_dict)
+    assert test_dict == valid_dict
+
+
+def test_manage_date_dont_ignore_date():
+    base_depart = "1994-01-01 18:32:18.299"
+    base_arrive = "1994-11-21 19:33:29.299"
+    test_dict = dict()
+    valid_dict = dict()
+    base_dict = {
+            "departure_time": base_depart,
+            "arrival_time": base_arrive
+            }
+
+    valid_dict['start_hour'] = '18:32:18'
+    valid_dict['end_hour'] = '19:33:29'
+    valid_dict['start_date'] = '1994/01/01'
+    valid_dict['end_date'] = '1994/11/21'
+    climapper.IGNORE_DATE = False
+    climapper.manage_date(base_dict, test_dict)
+    assert test_dict == valid_dict
