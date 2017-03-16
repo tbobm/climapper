@@ -27,5 +27,4 @@ vendor/
 
 *.html
 *test
-*tmp*
 __pycache__/
