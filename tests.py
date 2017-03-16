@@ -41,3 +41,11 @@ def test_dt_to_s():
     date_exp, hour_exp = climapper.dt_to_s(date_str)
     assert "1994/01/01" == date_exp
     assert "18:32:18" == hour_exp
+
+
+def test_manage_distance():
+    base_dict = dict()
+    correct_ele = {'distance': 1240}
+    resp_dict = {'distance_meters': 1240}
+    climapper.manage_distance(resp_dict, base_dict)
+    assert correct_ele == base_dict
