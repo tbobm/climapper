@@ -34,3 +34,10 @@ def test_get_params_simple():
     src, dest = climapper.get_params()
     assert src_exp == src
     assert dst_exp == dest
+
+
+def test_dt_to_s():
+    date_str = "1994-01-01 18:32:18.299"
+    date_exp, hour_exp = climapper.dt_to_s(date_str)
+    assert "1994/01/01" == date_exp
+    assert "18:32:18" == hour_exp
