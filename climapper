@@ -2,21 +2,16 @@
 # coding: utf-8
 import os
 import sys
-import requests
-import unidecode
 import argparse
 from climapper_utils.formatting import f_minutes, make_url, dt_to_s
 from climapper_utils.formatting import content_to_obj
+from climapper_utils.journey import make_request
 
 __author__ = "Theo Massard <massar_t@etna-alternance.net"
 
 
 NO_INTERNET = True
 IGNORE_DATE = True
-BASE_H = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0)"
-SPEC_H = " Gecko/20100101 Firefox/32.0"
-USER_AGENT = BASE_H + SPEC_H
-HEADERS = {'user-agent': USER_AGENT}
 
 
 def create_parser():
@@ -75,27 +70,6 @@ def get_params(home_var=None, work_var=None):
     tr_source = source.replace(',', "%2C")
     tr_dest = dest.replace(',', "%2C")
     return tr_source, tr_dest
-
-
-def make_request(url):
-    """
-    Requests the content of the formatted url
-    and returns the content of the page
-
-    :param url The url with the `GET` parameters embedded in
-
-    :type url str
-
-    :returns: content of the url request
-    :rtype str
-
-    """
-    try:
-        response = requests.get(url, headers=HEADERS)
-    except Exception as e:
-        raise e
-    content = response.content
-    return unidecode.unidecode(content.decode('utf-8'))
 
 
 def manage_durations(journey, journey_info):
