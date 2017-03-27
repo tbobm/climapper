@@ -44,6 +44,7 @@ def create_parser():
             help="Currently pointless to set to False"
             )
     parser.parse_args()
+    return parser
 
 
 def f_minutes(seconds):
@@ -306,4 +307,4 @@ def main(debug=True, start=None, dest=None):
 
 if __name__ == "__main__":
     # main()
-    create_parser()
+    print(create_parser())
