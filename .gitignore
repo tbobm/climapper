@@ -28,3 +28,5 @@ vendor/
 *.html
 *test
 __pycache__/
+.coverage
+.cache
