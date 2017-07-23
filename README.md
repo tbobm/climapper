@@ -66,7 +66,7 @@ $ climapper home
 - [x] Display them gracefully
 - [ ] Manage CLI args
 - [ ] Manage configuration trough specific file (~/.config/climapper.json?)
-- [ ] Maybe use [Fire](https://github.com/google/python-fire)
+- [ ] Create a clean wrapper for the API
 
 
 
