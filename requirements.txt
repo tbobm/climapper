@@ -1,5 +1,5 @@
 requests==2.20.1
-Unidecode==0.4.20
+Unidecode==0.04.21
 pytest==3.10.1
 pytest-cov==2.4.0
 pytest-cover==3.0.0
