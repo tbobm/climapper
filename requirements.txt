@@ -3,5 +3,5 @@ Unidecode==0.04.21
 pytest==3.10.1
 pytest-cov==2.4.0
 pytest-cover==3.0.0
-pytest-coverage==0.0
+pytest-coverage==0.0.1
 coveralls==1.11.1
